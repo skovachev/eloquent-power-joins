@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphOneOrMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class RelationshipsExtraMethods
@@ -116,6 +117,10 @@ class RelationshipsExtraMethods
                     '=',
                     $parentTable.'.'.$this->parentKey
                 );
+
+                if ($this instanceof MorphToMany) {
+                    $join->where($this->getMorphType(), '=', $this->getMorphClass());
+                }
 
                 if (is_array($callback) && isset($callback[$this->getTable()])) {
                     $callback[$this->getTable()]($join);
